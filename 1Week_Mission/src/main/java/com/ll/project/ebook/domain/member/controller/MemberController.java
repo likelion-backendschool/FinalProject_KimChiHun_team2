@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -54,5 +55,12 @@ public class MemberController {
             request.getSession().setAttribute("prevPage", uri);
         }
         return "member/login";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/profile")
+    public String showProfile(Model model, Principal principal) {
+        model.addAttribute("memberDto",  memberService.findByUsername(principal.getName()));
+        return "member/profile";
     }
 }
