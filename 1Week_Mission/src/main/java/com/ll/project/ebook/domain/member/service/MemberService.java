@@ -33,7 +33,7 @@ public class MemberService {
 
         return memberRepository.save(memberJoinDto.toEntity(role)).getId();
     }
-
+    @Transactional(readOnly = true)
     public MemberInfoDto findByUsername(String username) {
         Member member = memberRepository.findByUsername(username).
                 orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
@@ -41,4 +41,21 @@ public class MemberService {
         return new MemberInfoDto(member);
     }
 
+    @Transactional(readOnly = true)
+    public Member find(String username) {
+        Member member = memberRepository.findByUsername(username).
+                orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
+
+        return member;
+    }
+
+    public Long modify(MemberInfoDto memberInfoDto) {
+        Member member = find(memberInfoDto.getUsername());
+        Role role = Role.MEMBER;
+        if(!(memberInfoDto.getAuthor() == null ||memberInfoDto.getAuthor().equals(""))){
+            role = Role.AUTHOR;
+        }
+        member.modify(memberInfoDto.getNickname(), memberInfoDto.getEmail(), memberInfoDto.getAuthor(), role);
+        return memberRepository.save(member).getId();
+    }
 }

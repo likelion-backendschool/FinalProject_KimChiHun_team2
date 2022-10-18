@@ -2,7 +2,7 @@
 <html layout:decorate="~{layout/layout.html}">
 
 <head>
-    <title>회원가입</title>
+    <title>프로파일</title>
 </head>
 
 <body>
@@ -17,14 +17,14 @@
                         <span class="label-text">아이디</span>
                     </label>
                     <input autofocus type="text" name="username" placeholder="아이디" class="input input-bordered"
-                           maxlength="50" th:value = "${memberDto.getUsername()}" readonly>
+                           maxlength="50" th:value = "${memberInfoDto.getUsername()}" readonly>
                 </div>
 
                 <div class="form-control">
                     <label class="label">
                         <span class="label-text">이메일</span>
                     </label>
-                    <input type="email" name="email" placeholder="이메일" class="input input-bordered" maxlength="50" th:value = "${memberDto.getEmail()}" readonly>
+                    <input type="email" name="email" placeholder="이메일" class="input input-bordered" maxlength="50" th:value = "${memberInfoDto.getEmail()}" readonly>
                 </div>
 
                 <div class="form-control">
@@ -32,7 +32,7 @@
                         <span class="label-text">닉네임</span>
                     </label>
                     <input type="text" name="nickname"
-                           placeholder="닉네임" class="input input-bordered" maxlength="50" th:value = "${memberDto.getNickname()}" readonly>
+                           placeholder="닉네임" class="input input-bordered" maxlength="50" th:value = "${memberInfoDto.getNickname()}" readonly>
                 </div>
 
                 <div class="form-control">
@@ -40,7 +40,7 @@
                         <span class="label-text">작가명(선택)</span>
                     </label>
                     <input type="text" name="author"
-                           placeholder="입력시 작가활동이 가능합니다." class="input input-bordered" maxlength="50" th:value = "${memberDto.getAuthor()}" readonly>
+                           placeholder="입력시 작가활동이 가능합니다." class="input input-bordered" maxlength="50" th:value = "${memberInfoDto.getAuthor()}" readonly>
                 </div>
                 <div class="grid grid-cols-2 mt-2 gap-2">
                     <a href="/member/modify" class="btn btn-secondary btn-outline">회원정보 수정</a>
