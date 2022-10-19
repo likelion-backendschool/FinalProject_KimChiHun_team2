@@ -10,6 +10,7 @@ import com.ll.project.ebook.domain.member.exception.PasswordNotMatchException;
 import com.ll.project.ebook.domain.member.repository.MemberRepository;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,9 @@ public class MemberService {
         if(!(memberJoinDto.getNickname() == null ||memberJoinDto.getNickname().equals(""))){
             role = Role.AUTHOR;
         }
+
+        // 메일 보내기
+        SimpleMailMessage message = new SimpleMailMessage();
 
         return memberRepository.save(memberJoinDto.toEntity(role)).getId();
     }
