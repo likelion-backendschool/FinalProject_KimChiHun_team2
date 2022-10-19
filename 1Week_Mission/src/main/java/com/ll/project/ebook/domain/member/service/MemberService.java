@@ -11,6 +11,7 @@ import com.ll.project.ebook.domain.member.repository.MemberRepository;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender javaMailSender;
+    private static final String FROM_ADDRESS = "doolysmile@gmail.com";
     public Long join(MemberJoinDto memberJoinDto) {
         memberJoinDto.setPassword1(passwordEncoder.encode(memberJoinDto.getPassword1()));
         Role role = Role.MEMBER;
@@ -34,6 +37,11 @@ public class MemberService {
 
         // 메일 보내기
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(memberJoinDto.getEmail());
+        message.setFrom(FROM_ADDRESS);
+        message.setSubject(memberJoinDto.getUsername() + "님 회원가입을 축하합니다");
+        message.setText("회원 가입을 축하합니다." + "{사이트 링크}");
+        javaMailSender.send(message);
 
         return memberRepository.save(memberJoinDto.toEntity(role)).getId();
     }
