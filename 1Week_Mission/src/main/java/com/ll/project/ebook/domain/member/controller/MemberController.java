@@ -1,7 +1,7 @@
 package com.ll.project.ebook.domain.member.controller;
 
 import com.ll.project.ebook.domain.member.dto.MemberDto;
-import com.ll.project.ebook.domain.member.dto.MemberInfoDto;
+//import com.ll.project.ebook.domain.member.dto.MemberInfoDto;
 import com.ll.project.ebook.domain.member.dto.MemberJoinDto;
 import com.ll.project.ebook.domain.member.entity.Member;
 import com.ll.project.ebook.domain.member.service.MemberService;
