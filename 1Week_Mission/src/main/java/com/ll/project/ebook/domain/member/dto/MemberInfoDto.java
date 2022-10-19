@@ -28,7 +28,6 @@ public class MemberInfoDto {
     @NotEmpty(message = "아이디는 필수 입력 항목입니다.")
     @Email(message = "이메일이 아닙니다(형식을 올바르게 입력해주세요)")
     private String email;
-    private String author;
 
     public MemberInfoDto(Member member) {
         this.id = member.getId();
@@ -37,7 +36,6 @@ public class MemberInfoDto {
         this.username = member.getUsername();
         this.nickname = member.getNickname();
         this.email = member.getEmail();
-        this.author = member.getAuthor();
     }
 
 }

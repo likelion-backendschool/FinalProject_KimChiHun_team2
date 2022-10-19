@@ -27,7 +27,7 @@ public class MemberService {
             throw new AlreadyJoinException();
         }
         // 작가명이 있으면 author;
-        if(!(memberJoinDto.getAuthor() == null ||memberJoinDto.getAuthor().equals(""))){
+        if(!(memberJoinDto.getNickname() == null ||memberJoinDto.getNickname().equals(""))){
             role = Role.AUTHOR;
         }
 
@@ -49,13 +49,12 @@ public class MemberService {
         return member;
     }
 
-    public Long modify(MemberInfoDto memberInfoDto) {
-        Member member = find(memberInfoDto.getUsername());
+    public Long modify(Member member, String email, String nickname) {
         Role role = Role.MEMBER;
-        if(!(memberInfoDto.getAuthor() == null ||memberInfoDto.getAuthor().equals(""))){
+        if(!(nickname == null ||nickname.equals(""))){
             role = Role.AUTHOR;
         }
-        member.modify(memberInfoDto.getNickname(), memberInfoDto.getEmail(), memberInfoDto.getAuthor(), role);
+        member.modify(nickname, email,  role);
         return memberRepository.save(member).getId();
     }
 }

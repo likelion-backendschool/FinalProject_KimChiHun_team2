@@ -7,8 +7,8 @@ import com.ll.project.ebook.domain.member.service.MemberService;
 
 public interface InitDataBefore {
     default void before(MemberService memberService) {
-        MemberJoinDto member1 = new MemberJoinDto("user1", "1234","1234", "qwe", "test1@test.com", "");
-        MemberJoinDto member2 = new MemberJoinDto("user2", "1234","1234", "asd", "test2@test.com", "auth");
+        MemberJoinDto member1 = new MemberJoinDto("user1", "1234","1234","" , "test1@test.com");
+        MemberJoinDto member2 = new MemberJoinDto("user2", "1234","1234", "auth","test2@test.com");
         memberService.join(member1);
         memberService.join(member2);
     }

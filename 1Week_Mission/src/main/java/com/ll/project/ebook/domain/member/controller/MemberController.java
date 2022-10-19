@@ -1,11 +1,17 @@
 package com.ll.project.ebook.domain.member.controller;
 
+import com.ll.project.ebook.domain.member.dto.MemberDto;
 import com.ll.project.ebook.domain.member.dto.MemberInfoDto;
 import com.ll.project.ebook.domain.member.dto.MemberJoinDto;
+import com.ll.project.ebook.domain.member.entity.Member;
 import com.ll.project.ebook.domain.member.service.MemberService;
 import com.ll.project.ebook.global.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -60,30 +66,26 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
-    public String showProfile(Model model, Principal principal) {
-        model.addAttribute("memberInfoDto",  memberService.findByUsername(principal.getName()));
+    public String showProfile() {
         return "member/profile";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify")
-    public String showModify(Model model, Principal principal) {
-        model.addAttribute("memberInfoDto",  memberService.findByUsername(principal.getName()));
+    public String showModify() {
         return "member/infoModify";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify")
-    public String modify(@Valid MemberInfoDto memberInfoDto, BindingResult bindingResult, Model model, Principal principal) {
+    public String modify(@AuthenticationPrincipal MemberDto memberDto, String email, String nickname) {
+        Member member = memberService.find(memberDto.getUsername());
 
-        System.out.println("qqqqqqqqqqqqq" + memberInfoDto.getAuthor());
-        if(bindingResult.hasErrors()){
-            model.addAttribute("memberInfoDto", memberService.findByUsername(principal.getName()));
-            return "member/infoModify";
-        }
+        memberDto.setModifyDate(member.getModifyDate());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(member, member.getPassword(), memberDto.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        model.addAttribute("memberInfoDto",  memberService.findByUsername(principal.getName()));
-        memberService.modify(memberInfoDto);
+        memberService.modify(member, email, nickname);
 
         return "redirect:/member/profile?msg=" + Ut.url.encode("수정이 완료되었습니다.");
     }

@@ -26,22 +26,19 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = true)
     private String nickname;
 
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = true)
-    private String author;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public void modify(String nickname, String email, String author, Role role) {
+    public void modify(String nickname, String email, Role role) {
         this.nickname = nickname;
         this.email = email;
-        this.author = author;
         this.role = role;
     }
 }

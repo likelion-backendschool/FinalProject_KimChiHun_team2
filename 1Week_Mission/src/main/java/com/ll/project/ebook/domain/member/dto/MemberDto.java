@@ -2,22 +2,27 @@ package com.ll.project.ebook.domain.member.dto;
 
 import com.ll.project.ebook.domain.member.entity.Member;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 public class MemberDto extends User {
     private final Long id;
     private final LocalDateTime createDate;
-    private final LocalDateTime modifyDate;
+    @Setter
+    private LocalDateTime modifyDate;
     private final String username;
     private final String nickname;
     private final String email;
+    private Map<String, Object> attributes;
 
-    private final String author;
     public MemberDto(Member member, List<GrantedAuthority> authorities) {
         super(member.getUsername(), member.getPassword(), authorities);
         this.id = member.getId();
@@ -26,7 +31,6 @@ public class MemberDto extends User {
         this.username = member.getUsername();
         this.nickname = member.getNickname();
         this.email = member.getEmail();
-        this.author = member.getAuthor();
     }
 
     public Member getMember() {
@@ -38,11 +42,15 @@ public class MemberDto extends User {
                 .username(username)
                 .nickname(nickname)
                 .email(email)
-                .author(author)
                 .build();
     }
 
     public String getName() {
         return getUsername();
     }
+    @Override
+    public Set<GrantedAuthority> getAuthorities() {
+        return super.getAuthorities().stream().collect(Collectors.toSet());
+    }
+
 }

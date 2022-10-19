@@ -15,10 +15,8 @@
             <script>
                 let MemberJoin__submitDone = false;
 
-                function MemberJoin__submit(form) {
-                    if (MemberJoin__submitDone) {
-                        return;
-                    }
+                function MemberModify__submit(form) {
+
 
                     form.username.value = form.username.value.trim();
 
@@ -29,7 +27,7 @@
                         return;
                     }
 
-                    form.password.value = form.password.value.trim();
+
 
                     form.email.value = form.email.value.trim();
 
@@ -46,36 +44,29 @@
             </script>
 
             <form th:action method="POST" class="flex flex-col gap-3"
-                  onsubmit="MemberJoin__submit(this); return false;">
+                  onsubmit="MemberModify__submit(this); return false;">
                 <div class="form-control">
                     <label class="label">
                         <span class="label-text">아이디</span>
                     </label>
                     <input autofocus type="text" name="username" placeholder="아이디" class="input input-bordered"
-                           maxlength="50" th:value = "${memberInfoDto.getUsername()}" readonly>
+                           maxlength="50" th:value = "${#authentication.principal.username}" readonly>
                 </div>
 
                 <div class="form-control">
                     <label class="label">
                         <span class="label-text">이메일</span>
                     </label>
-                    <input type="email" name="email" placeholder="이메일" class="input input-bordered" maxlength="50" th:value = "${memberInfoDto.getEmail()}">
+                    <input type="email" name="email" placeholder="이메일" class="input input-bordered" maxlength="50" th:value = "${#authentication.principal.email}">
                 </div>
 
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">닉네임</span>
-                    </label>
-                    <input type="text" name="nickname"
-                           placeholder="닉네임" class="input input-bordered" maxlength="50" th:value = "${memberInfoDto.getNickname()}">
-                </div>
 
                 <div class="form-control">
                     <label class="label">
                         <span class="label-text">작가명(선택)</span>
                     </label>
-                    <input type="text" name="author"
-                           placeholder="입력시 작가활동이 가능합니다." class="input input-bordered" maxlength="50" th:value = "${memberInfoDto.getAuthor()}">
+                    <input type="text" name="nickname"
+                           placeholder="입력시 작가활동이 가능합니다." class="input input-bordered" maxlength="50" th:value = "${#authentication.principal.nickname}">
                 </div>
                 <div class="grid grid-cols-2 mt-2 gap-2">
                     <input class="btn btn-primary" type="submit" value="수정하기">

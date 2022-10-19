@@ -29,14 +29,12 @@ public class MemberJoinDto {
     @NotEmpty(message = "아이디는 필수 입력 항목입니다.")
     @Email(message = "이메일이 아닙니다(형식을 올바르게 입력해주세요)")
     private String email;
-    private String author;
     public Member toEntity(Role role){
         return Member.builder()
                 .username(username)
                 .nickname(nickname)
                 .password(password1)
                 .email(email)
-                .author(author)
                 .role(role)
                 .build();
     }
