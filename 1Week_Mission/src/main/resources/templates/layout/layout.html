@@ -43,8 +43,13 @@
             <span class="text-[#1E9EFE]">M</span>
             <span class="ml-[2px] hidden sm:block">UT</span>
         </a>
-
         <div class="flex gap-4">
+            <a href="/post/list" class="inline-flex" sec:authorize="isAuthenticated()">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span class="ml-[2px] hidden sm:block">
+                    글 리스트
+                </span>
+            </a>
             <a href="/member/login" class="inline-flex" sec:authorize="isAnonymous()">
                 <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 <span class="ml-[2px] hidden sm:block">
