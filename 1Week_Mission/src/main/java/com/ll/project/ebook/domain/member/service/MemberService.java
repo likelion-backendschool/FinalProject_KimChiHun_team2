@@ -34,13 +34,7 @@ public class MemberService {
         return memberRepository.save(memberJoinDto.toEntity(role)).getId();
     }
 
-    @Transactional(readOnly = true)
-    public Member findByUsername(String username) {
-        Member member = memberRepository.findByUsername(username).
-                orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
 
-        return member;
-    }
 
     public Long modify(Member member, String email, String nickname) {
         Role role = Role.MEMBER;
@@ -67,5 +61,18 @@ public class MemberService {
         return false;
     }
 
+    @Transactional(readOnly = true)
+    public Member findByUsername(String username) {
+        Member member = memberRepository.findByUsername(username).
+                orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
 
+        return member;
+    }
+    @Transactional(readOnly = true)
+    public Member findByEmail(String email) {
+//        Member member = memberRepository.findByEmail(email).
+//                orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = memberRepository.findByEmail(email).orElse(null);
+        return member;
+    }
 }

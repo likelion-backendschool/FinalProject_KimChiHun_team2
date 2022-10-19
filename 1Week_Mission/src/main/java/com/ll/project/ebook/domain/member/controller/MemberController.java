@@ -108,4 +108,20 @@ public class MemberController {
 
         return "redirect:/member/profile?msg=" + Ut.url.encode("비밀번호 수정이 완료되었습니다.");
     }
+
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/findUsername")
+    public String showFindUsername(){
+        return "member/findUsername";
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/findUsername")
+    public String findUsername(String email){
+        Member member = memberService.findByEmail(email);
+        if(member == null){
+            return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode("사용자를 찾을 수 없습니다.");
+        }
+        return "redirect:/member/findUsername?msg=" + Ut.url.encode(member.getUsername());
+    }
 }
