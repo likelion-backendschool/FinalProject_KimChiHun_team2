@@ -1,12 +1,12 @@
 package com.ll.project.ebook.domain.member.service;
 
 import com.ll.project.ebook.domain.member.dto.MemberDto;
-import com.ll.project.ebook.domain.member.dto.MemberInfoDto;
 import com.ll.project.ebook.domain.member.dto.MemberJoinDto;
 import com.ll.project.ebook.domain.member.entity.Member;
 import com.ll.project.ebook.domain.member.entity.Role;
 import com.ll.project.ebook.domain.member.exception.AlreadyJoinException;
 import com.ll.project.ebook.domain.member.exception.MemberNotFoundException;
+import com.ll.project.ebook.domain.member.exception.PasswordNotMatchException;
 import com.ll.project.ebook.domain.member.repository.MemberRepository;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,16 +33,9 @@ public class MemberService {
 
         return memberRepository.save(memberJoinDto.toEntity(role)).getId();
     }
-    @Transactional(readOnly = true)
-    public MemberInfoDto findByUsername(String username) {
-        Member member = memberRepository.findByUsername(username).
-                orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
-
-        return new MemberInfoDto(member);
-    }
 
     @Transactional(readOnly = true)
-    public Member find(String username) {
+    public Member findByUsername(String username) {
         Member member = memberRepository.findByUsername(username).
                 orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
 
@@ -57,4 +50,22 @@ public class MemberService {
         member.modify(nickname, email,  role);
         return memberRepository.save(member).getId();
     }
+
+    public Long modifyPassword(MemberDto memberDto, String oldPassword, String newPassword){
+        Member member = findByUsername(memberDto.getUsername());
+        if(!checkPassword(memberDto, oldPassword)){
+            throw new PasswordNotMatchException("기존 비밀번호가 다릅니다.");
+        }
+        member.setPassword(passwordEncoder.encode(newPassword));
+        return memberRepository.save(member).getId();
+    }
+    public boolean checkPassword(MemberDto memberDto, String oldPassword) {
+        Member member = findByUsername(memberDto.getUsername());
+        if(passwordEncoder.matches(oldPassword, member.getPassword())){
+            return true;
+        }
+        return false;
+    }
+
+
 }

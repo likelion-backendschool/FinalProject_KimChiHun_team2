@@ -79,7 +79,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify")
     public String modify(@AuthenticationPrincipal MemberDto memberDto, String email, String nickname) {
-        Member member = memberService.find(memberDto.getUsername());
+        Member member = memberService.findByUsername(memberDto.getUsername());
 
         memberDto.setModifyDate(member.getModifyDate());
         Authentication authentication = new UsernamePasswordAuthenticationToken(member, member.getPassword(), memberDto.getAuthorities());
@@ -87,6 +87,25 @@ public class MemberController {
 
         memberService.modify(member, email, nickname);
 
-        return "redirect:/member/profile?msg=" + Ut.url.encode("수정이 완료되었습니다.");
+        return "redirect:/member/profile?msg=" + Ut.url.encode("정보 수정이 완료되었습니다.");
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modifyPassword")
+    public String modifyPassword(){
+        return "member/passwordModify";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modifyPassword")
+    public String modifyPassword(@AuthenticationPrincipal MemberDto memberDto, String oldPassword, String newPassword) {
+
+        if(!memberService.checkPassword(memberDto, oldPassword)){
+            return "redirect:/member/modifyPassword?errorMsg=" + Ut.url.encode("기존 비밀번호가 다릅니다.");
+        }
+
+        memberService.modifyPassword(memberDto, oldPassword, newPassword);
+
+        return "redirect:/member/profile?msg=" + Ut.url.encode("비밀번호 수정이 완료되었습니다.");
     }
 }
