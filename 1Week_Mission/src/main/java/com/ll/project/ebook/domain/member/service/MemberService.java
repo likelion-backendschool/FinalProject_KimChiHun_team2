@@ -16,6 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -59,6 +63,9 @@ public class MemberService {
 
     public Long modifyPassword(MemberDto memberDto, String oldPassword, String newPassword){
         Member member = findByUsername(memberDto.getUsername());
+        if(member == null){
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
+        }
         if(!checkPassword(memberDto, oldPassword)){
             throw new PasswordNotMatchException("기존 비밀번호가 다릅니다.");
         }
@@ -67,6 +74,9 @@ public class MemberService {
     }
     public boolean checkPassword(MemberDto memberDto, String oldPassword) {
         Member member = findByUsername(memberDto.getUsername());
+        if(member == null){
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
+        }
         if(passwordEncoder.matches(oldPassword, member.getPassword())){
             return true;
         }
@@ -75,9 +85,9 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Member findByUsername(String username) {
-        Member member = memberRepository.findByUsername(username).
-                orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
-
+//        Member member = memberRepository.findByUsername(username).
+//                orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = memberRepository.findByUsername(username).orElse(null);
         return member;
     }
     @Transactional(readOnly = true)
@@ -86,5 +96,37 @@ public class MemberService {
 //                orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
         Member member = memberRepository.findByEmail(email).orElse(null);
         return member;
+    }
+
+    public Long findPassword(String username) {
+        Member member = findByUsername(username);
+        if(member == null){
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
+        }
+        String newPassword = generateRandomPassword(4);
+        System.out.println("temp" + newPassword);
+        member.setPassword(passwordEncoder.encode(newPassword));
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(member.getEmail());
+        message.setFrom(FROM_ADDRESS);
+        message.setSubject(member.getUsername() + "님 비밀번호입니다.");
+        message.setText("임시비밀 번호는 : " + newPassword);
+        javaMailSender.send(message);
+
+        memberRepository.save(member);
+        return member.getId();
+    }
+    // len은 비밀 번호의 길이
+    public String generateRandomPassword(int len){
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        SecureRandom random = new SecureRandom();
+
+        return IntStream.range(0, len)
+                .map(i -> random.nextInt(chars.length()))
+                .mapToObj(randomIndex -> String.valueOf(chars.charAt(randomIndex)))
+                .collect(Collectors.joining());
+
     }
 }

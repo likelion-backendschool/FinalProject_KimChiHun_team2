@@ -122,6 +122,28 @@ public class MemberController {
         if(member == null){
             return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode("사용자를 찾을 수 없습니다.");
         }
-        return "redirect:/member/findUsername?msg=" + Ut.url.encode(member.getUsername());
+        return "redirect:/member/login?msg=" + Ut.url.encode(member.getUsername());
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/findPassword")
+    public String showFindPassword(){
+        return "member/findPassword";
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/findPassword")
+    public String findPassword(String username, String email){
+        Member member = memberService.findByUsername(username);
+        if(member == null){
+            return "redirect:/member/findPassword?errorMsg=" + Ut.url.encode("사용자를 찾을 수 없습니다.");
+        }
+
+        System.out.println("emailemail" + email);
+        if(!member.getEmail().equals(email)){
+            return "redirect:/member/findPassword?errorMsg=" + Ut.url.encode("이메일이 틀렸습니다.");
+        }
+        memberService.findPassword(username);
+        return "redirect:/member/login?msg=" + Ut.url.encode("메일로 임시 비밀 번호가 발송 되었습니다");
     }
 }
