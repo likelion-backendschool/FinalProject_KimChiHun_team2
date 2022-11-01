@@ -1,0 +1,47 @@
+<!--<!DOCTYPE html>-->
+<!--<html layout:decorate="~{/layout/layout}">-->
+
+<!--<head>-->
+<!--    <title>메인</title>-->
+<!--</head>-->
+
+<!--<main layout:fragment="main">-->
+<!--    <div class="container mx-auto flex-grow flex items-center justify-center">-->
+<!--        <h1>메인페이지</h1>-->
+<!--    </div>-->
+<!--</main>-->
+
+<!--</html>-->
+<!DOCTYPE html>
+<html layout:decorate="~{layout/layout.html}">
+
+<head>
+    <title>메인</title>
+</head>
+
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <h1>메인페이지</h1>
+
+        <ul>
+            <li th:each="post : ${posts}" class="flex gap-2 items-center">
+                <a th:href="@{|/post/${post.id}|}" th:text="|번호 : ${post.id}|">
+                </a>
+
+                <a th:href="@{|/post/${post.id}|}" th:text="|제목 : ${post.subject}|">
+                </a>
+
+                <a th:href="@{|/post/${post.id}|}" th:text="|작성자 : ${post.member.username}|">
+                </a>
+
+                <a th:href="@{|/post/${post.id}|}" th:text="|수정날짜 : ${article.modifyDate}|">
+                </a>
+
+
+            </li>
+        </ul>
+    </div>
+</section>
+</body>
+</html>
